@@ -11,8 +11,8 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    def customImageName = "my-gogs-image:${env.BUILD_NUMBER}"
-                    docker.build(customImageName, "-f Dockerfile .")
+                    def lesia-gogs-image = "my-gogs-image:${env.BUILD_NUMBER}"
+                    docker.build(lesia-gogs-image, "-f Dockerfile .")
                 }
             }
         }
