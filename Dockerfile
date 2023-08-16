@@ -1,44 +1,13 @@
-FROM golang:alpine3.17 AS binarybuilder
-RUN apk --no-cache --no-progress add --virtual \
-  build-deps \
-  build-base \
-  git \
-  linux-pam-dev
+FROM golang:1.18 AS builder
 
-WORKDIR /gogs.io/gogs
+WORKDIR /app
 COPY . .
+RUN go build -o gogs
 
-RUN ./docker/build/install-task.sh
-RUN TAGS="cert pam" task build
+FROM debian:bullseye-slim  
 
-FROM alpine:3.17
-RUN apk --no-cache --no-progress add \
-  bash \
-  ca-certificates \
-  curl \
-  git \
-  linux-pam \
-  openssh \
-  s6 \
-  shadow \
-  socat \
-  tzdata \
-  rsync
+WORKDIR /app
+COPY --from=builder /app/gogs /app/gogs
 
-ENV GOGS_CUSTOM /data/gogs
-
-# Configure LibC Name Service
-COPY docker/nsswitch.conf /etc/nsswitch.conf
-
-WORKDIR /app/gogs
-COPY docker ./docker
-COPY --from=binarybuilder /gogs.io/gogs/gogs .
-
-RUN ./docker/build/finalize.sh
-
-# Configure Docker Container
-VOLUME ["/data", "/backup"]
-EXPOSE 22 3000
-HEALTHCHECK CMD (curl -o /dev/null -sS http://localhost:3000/healthcheck) || exit 1
-ENTRYPOINT ["/app/gogs/docker/start.sh"]
-CMD ["/bin/s6-svscan", "/app/gogs/docker/s6/"]
+EXPOSE 3000
+ENTRYPOINT ["/app/gogs", "web"]
