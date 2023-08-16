@@ -1,34 +1,11 @@
 pipeline {
-    agent any
-
+    agent { dockerfile true }
     stages {
-        stage('Checkout') {
+        stage('Test') {
             steps {
-                checkout scm
+                sh 'node --version'
+    
             }
-        }
-
-        stage('Build Image') {
-            steps {
-                script {
-                    def lesia-gogs-image = "my-gogs-image:${env.BUILD_NUMBER}"
-                    docker.build(lesia-gogs-image, "-f Dockerfile .")
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    sh 'docker-compose up -d'
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            sh 'docker-compose down'
         }
     }
 }
