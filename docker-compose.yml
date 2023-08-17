@@ -7,7 +7,6 @@ services:
        - "POSTGRES_USER=gogs"
        - "POSTGRES_PASSWORD=xxxx888"
        - "POSTGRES_DB=gogs"
-       -"POSTGRES_HOST=0.0.0.0:5432"
       volumes:
        - "db-data:/var/lib/postgresql/data"
       networks:
