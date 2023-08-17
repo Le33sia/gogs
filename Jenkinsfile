@@ -22,7 +22,6 @@ pipeline {
     }
     stage('Start container') {
       steps {
-        sh 'docker build -o gogs'
         sh 'docker compose up -d'
         sh 'docker compose ps'
       }
