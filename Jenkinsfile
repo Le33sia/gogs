@@ -1,5 +1,10 @@
 pipeline {
   agent any
+  environment {
+        DOCKER_IMAGE_NAME = "lesia-gogs-app"
+        DOCKER_COMPOSE_FILE = "docker-compose.yml"
+    }
+
   stages {
     stage("verify tooling") {
       steps {
@@ -17,6 +22,9 @@ pipeline {
     }
     stage('Start container') {
       steps {
+        script {
+                    docker.build(DOCKER_IMAGE_NAME, "./gogs")
+                    }
         sh 'docker compose up -d'
         sh 'docker compose ps'
       }
