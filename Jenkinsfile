@@ -22,9 +22,6 @@ pipeline {
     }
     stage('Start container') {
       steps {
-        script {
-                    docker.build(DOCKER_IMAGE_NAME, "./gogs")
-                    }
         sh 'docker compose up -d'
         sh 'docker compose ps'
       }
