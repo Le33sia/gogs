@@ -13,7 +13,7 @@ services:
       networks:
        - gogs
     gogs:
-      build: https://github.com/Le33sia/gogs
+      build: /home/git/gogs
       restart: always
       ports:
        - "10022:22"
