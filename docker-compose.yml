@@ -14,7 +14,7 @@ services:
        - gogs
     gogs:
       build: 
-        context: .
+        context: ./gogs
         dockerfile: Dockerfile
       restart: always
       ports:
