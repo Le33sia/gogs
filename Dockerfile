@@ -3,7 +3,7 @@ FROM golang:1.20 AS build-stage
 
 WORKDIR /app
 COPY . .
-RUN go get
+RUN go mod download
 COPY *.go ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o gogs
