@@ -13,9 +13,7 @@ services:
       networks:
        - gogs
     gogs:
-      build: 
-        context: /app/gogs
-        dockerfile: Dockerfile
+      build: .
       restart: always
       ports:
        - "10022:22"
