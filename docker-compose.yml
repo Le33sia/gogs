@@ -13,7 +13,9 @@ services:
       networks:
        - gogs
     gogs:
-      build: gogs
+      build: 
+        context: .
+        dockerfile: Dockerfile
       restart: always
       ports:
        - "10022:22"
@@ -28,6 +30,7 @@ services:
        - "gogs-data:/data"
       depends_on:
        - postgres
+       container_name: lesias-gogs-container
 
 networks:
     gogs:
