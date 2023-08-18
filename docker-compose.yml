@@ -1,19 +1,8 @@
 version: '2'
 services:
-    postgres:
-      image: postgres:9.5
-      restart: always
-      environment:
-       - "POSTGRES_USER=gogs"
-       - "POSTGRES_PASSWORD=xxxx888"
-       - "POSTGRES_DB=gogs"
-       - "POSTGRES_HOST=0.0.0.0:5432"
-      volumes:
-       - "db-data:/var/lib/postgresql/data"
-      networks:
-       - gogs
     gogs:
-      build: .
+      build: 
+        context: .
       restart: always
       ports:
        - "10022:22"
@@ -29,6 +18,19 @@ services:
       depends_on: 
        - "postgres"
 
+    postgres:
+      image: postgres:9.5
+      restart: always
+      environment:
+       - "POSTGRES_USER=gogs"
+       - "POSTGRES_PASSWORD=xxxx888"
+       - "POSTGRES_DB=gogs"
+       - "POSTGRES_HOST=0.0.0.0:5432"
+      volumes:
+       - "db-data:/var/lib/postgresql/data"
+      networks:
+       - gogs
+    
 networks:
     gogs:
       driver: bridge
