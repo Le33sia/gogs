@@ -1,9 +1,5 @@
 pipeline {
   agent any
-  environment {
-        DOCKER_IMAGE_NAME = "lesia-gogs-app"
-        DOCKER_COMPOSE_FILE = "docker-compose.yml"
-    }
 
   stages {
     stage("verify tooling") {
