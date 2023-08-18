@@ -28,8 +28,7 @@ services:
        - gogs
       volumes:
        - "gogs-data:/data"
-      depends_on:
-       - postgres
+      depends_on: postgres
        container_name: lesias-gogs-container
 
 networks:
