@@ -1,4 +1,4 @@
-FROM golang:alpine3.11 AS binarybuilder
+FROM golang:1.20 AS binarybuilder
 
 
 WORKDIR /app
@@ -9,8 +9,7 @@ COPY *.go ./
 RUN CGO_ENABLED=0 GOOS=linux go build -o gogs
 
 
-
-FROM alpine:3.11
+FROM debian:bullseye-slim
 
 WORKDIR /app
 COPY --from=build-stage /gogs /gogs
