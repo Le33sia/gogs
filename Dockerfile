@@ -10,7 +10,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o gogs
 
 
 
-FROM alpine3.11
+FROM alpine:3.11
 
 WORKDIR /app
 COPY --from=build-stage /gogs /gogs
