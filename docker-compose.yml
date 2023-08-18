@@ -28,7 +28,8 @@ services:
        - gogs
       volumes:
        - "gogs-data:/data"
-      depends_on: postgres
+      depends_on: 
+       - postgres
 
 networks:
     gogs:
