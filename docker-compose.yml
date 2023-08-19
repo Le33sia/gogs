@@ -1,42 +1,26 @@
-version: '2'
+version: '3'
 services:
-    gogs:
-      build: 
-        context: .
-      restart: always
-      ports:
-       - "10022:22"
-       - "3000:3000"
-      links:
-       - postgres
-      environment:
-       - "RUN_CROND=true"
-      networks:
-       - gogs
-      volumes:
-       - "gogs-data:/data"
-      depends_on: 
-       - "postgres"
+  gogs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - gogs-data:/data/gogs
+    depends_on:
+      - mariadb
 
-    postgres:
-      image: postgres:9.5
-      restart: always
-      environment:
-       - "POSTGRES_USER=gogs"
-       - "POSTGRES_PASSWORD=xxxx888"
-       - "POSTGRES_DB=gogs"
-       - "POSTGRES_HOST=0.0.0.0:5432"
-      volumes:
-       - "db-data:/var/lib/postgresql/data"
-      networks:
-       - gogs
-    
-networks:
-    gogs:
-      driver: bridge
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: your_root_password
+      MYSQL_DATABASE: gogs
+      MYSQL_USER: gogs
+      MYSQL_PASSWORD: your_gogs_db_password
+    volumes:
+      - mariadb-data:/var/lib/mysql
 
 volumes:
-    db-data:
-      driver: local
-    gogs-data:
-      driver: local
+  gogs-data:
+  mariadb-data:
