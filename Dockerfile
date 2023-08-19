@@ -1,44 +1,41 @@
-FROM golang:alpine3.17 AS binarybuilder
-RUN apk --no-cache --no-progress add --virtual \
-  build-deps \
-  build-base \
-  git \
-  linux-pam-dev
+# Use an official Golang image as the base image
+FROM golang:1.16 AS build
 
-WORKDIR /gogs.io/gogs
-COPY . .
+# Set the working directory inside the container
+WORKDIR /go/src/github.com/gogs/gogs
 
-RUN ./docker/build/install-task.sh
-RUN TAGS="cert pam" task build
+# Clone Gogs repository
+RUN git clone --depth=1 https://github.com/gogs/gogs.git .
 
-FROM alpine:3.17
-RUN apk --no-cache --no-progress add \
-  bash \
-  ca-certificates \
-  curl \
-  git \
-  linux-pam \
-  openssh \
-  s6 \
-  shadow \
-  socat \
-  tzdata \
-  rsync
+# Build Gogs
+RUN go build -tags "sqlite cert" -o gogs
 
-ENV GOGS_CUSTOM /data/gogs
+# Start a new stage
+FROM debian:bullseye-slim
 
-# Configure LibC Name Service
-COPY docker/nsswitch.conf /etc/nsswitch.conf
+# Set environment variables for Gogs configuration
+ENV USER=gogs
+ENV GOGS_CUSTOM=/data/gogs
 
-WORKDIR /app/gogs
-COPY docker ./docker
-COPY --from=binarybuilder /gogs.io/gogs/gogs .
+# Create a non-root user
+RUN useradd -r -u 1000 -U -d /data -s /bin/bash -G users ${USER}
 
-RUN ./docker/build/finalize.sh
+# Install dependencies and configure
+RUN apt-get update && \
+    apt-get install -y ca-certificates sqlite3 git && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /data/gogs && \
+    chown -R ${USER}:${USER} /data/gogs
 
-# Configure Docker Container
-VOLUME ["/data", "/backup"]
-EXPOSE 22 3000
-HEALTHCHECK CMD (curl -o /dev/null -sS http://localhost:3000/healthcheck) || exit 1
-ENTRYPOINT ["/app/gogs/docker/start.sh"]
-CMD ["/bin/s6-svscan", "/app/gogs/docker/s6/"]
+# Copy the compiled Gogs binary from the build stage
+COPY --from=build /go/src/github.com/gogs/gogs/gogs /app/gogs
+
+# Set the user
+USER lesia
+WORKDIR /app
+
+# Expose Gogs port
+EXPOSE 3000
+
+# Start Gogs
+CMD ["./gogs", "web"]
