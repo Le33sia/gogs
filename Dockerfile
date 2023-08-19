@@ -1,17 +1,20 @@
 FROM golang:1.20 AS build-stage
 WORKDIR /app
-RUN git clone --depth=1 https://github.com/gogs/gogs.git .
 COPY . .
 RUN go get
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /app/gogs/gogs
-FROM debian:bullseye-slim
-ENV USER=gogs
+COPY *.go ./
+RUN CGO_ENABLED=0 GOOS=linux go build -o /gogs
 
-WORKDIR /app/gogs
-COPY --from=build-stage app/gogs app2/gogs
+
+
+FROM debian:bullseye-slim
+WORKDIR /app
+COPY --from=build-stage /gogs /gogs
 EXPOSE 22 3000
 ENTRYPOINT ["/gogs", "web"]
+
+
+
 
 
 
