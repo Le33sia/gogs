@@ -31,7 +31,7 @@ RUN apt-get update && \
 COPY --from=build /go/src/github.com/gogs/gogs/gogs /app/gogs
 
 # Set the user
-USER lesia
+USER git
 WORKDIR /app
 
 # Expose Gogs port
