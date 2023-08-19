@@ -8,7 +8,7 @@ WORKDIR /go/src/github.com/gogs/gogs
 RUN git clone --depth=1 https://github.com/gogs/gogs.git .
 
 # Build Gogs
-RUN go build -tags "sqlite cert" -o gogs
+RUN go build -o gogs
 
 # Start a new stage
 FROM debian:bullseye-slim
