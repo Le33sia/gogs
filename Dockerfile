@@ -2,7 +2,7 @@
 FROM golang:1.16 AS build
 
 # Set the working directory inside the container
-WORKDIR /go/src/github.com/gogs/gogs
+WORKDIR /go/gogs/gogs
 
 # Clone Gogs repository
 RUN git clone --depth=1 https://github.com/gogs/gogs.git .
@@ -28,10 +28,10 @@ RUN apt-get update && \
     chown -R ${USER}:${USER} /data/gogs
 
 # Copy the compiled Gogs binary from the build stage
-COPY --from=build /go/src/github.com/gogs/gogs/gogs /app/gogs
+COPY --from=build /go/gogs/gogs /app/gogs
 
 # Set the user
-USER git
+USER gogs
 WORKDIR /app
 
 # Expose Gogs port
