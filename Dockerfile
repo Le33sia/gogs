@@ -11,6 +11,7 @@ FROM debian:bullseye-slim
 WORKDIR /app
 COPY --from=build-stage /app/gogs /gogs
 EXPOSE 22 3000
+USER lesia:lesia
 ENTRYPOINT ["/gogs", "web"]
 
 
