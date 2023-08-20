@@ -12,7 +12,7 @@ services:
       networks:
        - gogs
     gogs:
-      build: /gogs
+      build: gogs
       restart: always
       ports:
        - "10022:22"
