@@ -2,6 +2,7 @@ pipeline {
   agent any
   environment {
         DOCKER_COMPOSE_FILE = "docker-compose.yml"
+        
     }
 
   stages {
@@ -27,7 +28,7 @@ pipeline {
     }
     stage('Run tests against the container') {
       steps {
-        sh 'curl http://10.0.0.237:3000/install'
+        sh 'curl http://10.0.0.211:3000/install'
       }
     }
   }
