@@ -1,7 +1,7 @@
 version: '2'
 services:
     postgres:
-      image: postgres:9.5
+      image: postgres
       restart: always
       environment:
        - "POSTGRES_USER=gogs"
@@ -12,6 +12,7 @@ services:
       networks:
        - gogs
     gogs:
+      image: my-gogs-image
       build: .
       restart: always
       ports:
