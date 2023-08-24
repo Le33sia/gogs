@@ -11,6 +11,7 @@ services:
       MYSQL_DATABASE: gogs
       MYSQL_USER: gogs
       MYSQL_PASSWORD: mygogspassword
+      MYSQL_HOST: 0.0.0.0:3306
       GOGS_DATABASE_HOST: mariadb-container
     volumes:
       - mariadb_data:/var/lib/mysql
@@ -32,7 +33,9 @@ services:
       GOGS_DATABASE_USER: gogs
       GOGS_DATABASE_PASSWORD: mygogspassword
       GOGS_DATABASE_NAME: gogs
+      GOGS_HOST: 10.0.0.211:3000
     ports:
+      - "10022:22"
       - "3000:3000"
     volumes:
       - gogs_data:/data
