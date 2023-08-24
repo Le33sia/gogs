@@ -28,9 +28,12 @@ pipeline {
 
         stage('Run Docker Compose') {
             steps {
-                sh 'docker compose up -d'
-                sh 'docker ps'
-                sh 'docker images'
+                script {
+                    sh 'docker-compose up -d'
+                    sleep 10 // Wait for a few seconds for containers to start
+                    sh 'docker ps'
+                    sh 'docker images'
+                }
             }
         }
     }
@@ -43,3 +46,5 @@ pipeline {
         }
     }
 }
+
+
