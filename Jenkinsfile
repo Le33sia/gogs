@@ -15,7 +15,6 @@ pipeline {
                 sh 'docker ps'
                 sh 'docker-compose down -v --remove-orphans'
                 sh 'docker images'
-                sh 'curl http://10.0.0.211:3000/install'
                 
             }
         }
