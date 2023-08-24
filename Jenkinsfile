@@ -33,10 +33,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            // Cleanup and other post-build tasks
-        }
-    }
 }
