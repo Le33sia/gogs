@@ -19,7 +19,6 @@ pipeline {
                 
             }
         }
-    }
         
         stage('Deploy to Ubuntu_Server') {
             steps {
@@ -43,8 +42,5 @@ pipeline {
             }
         }
     }
-
-
-
-    
+}    
     
