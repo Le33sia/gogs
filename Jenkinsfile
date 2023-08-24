@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         GOGS_IMAGE = "my-gogs-image"
-        POSTGRES_IMAGE = "my-postgres-image"
+        POSTGRES_IMAGE = "postgres"
         DOCKER_COMPOSE_FILE = "docker-compose.yml"
 
     }
@@ -17,7 +17,7 @@ pipeline {
 
                     sh "docker-compose up -d"
                     sh "docker save -o my-gogs-image.tar my-gogs-image"
-                    sh "docker save -o my-postgres-image.tar my-postgres-image"
+                    sh "docker save -o postgres.tar postgres"
                     
                     // Transfer files to the remote server
                     sshPublisher(
@@ -34,7 +34,7 @@ pipeline {
                                         remoteDirectory: "/home/git/workspace/"
                                     ),
                                     sshTransfer(
-                                        sourceFiles: "my-postgres-image.tar",
+                                        sourceFiles: "postgres.tar",
                                         remoteDirectory: "/home/git/workspace/"
                                     )
                                 ]
