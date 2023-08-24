@@ -1,7 +1,20 @@
 pipeline {
     agent any
 
-    stages {
+     stages {
+        stage('Start SSH Agent') {
+            steps {
+                sshagent(['cred_docker']) {
+                    // Your pipeline steps that require SSH credentials
+                }
+            }
+        }
+
+        // Other stages of your pipeline
+    
+
+
+  
         stage('Cleanup') {
             steps {
                 sh 'docker system prune -a --volumes -f'
@@ -41,5 +54,4 @@ pipeline {
             }
         }
     }
-}    
-    
+}   
