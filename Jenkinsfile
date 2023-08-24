@@ -4,9 +4,7 @@ pipeline {
     stages {
         stage('Cleanup') {
             steps {
-                script {
-                    sh 'docker system prune -a --volumes -f'
-                }
+                sh 'docker system prune -a --volumes -f'
             }
         }
 
@@ -28,23 +26,17 @@ pipeline {
 
         stage('Run Docker Compose') {
             steps {
-                script {
-                    sh 'docker-compose up -d'
-                    sleep 10 // Wait for a few seconds for containers to start
-                    sh 'docker ps'
-                    sh 'docker images'
-                }
+                sh 'docker-compose up -d'
+                sleep 10
+                sh 'docker ps'
+                sh 'docker images'
             }
         }
     }
 
     post {
         always {
-            script {
-                // Cleanup and other post-build tasks
-            }
+            // Cleanup and other post-build tasks
         }
     }
 }
-
-
