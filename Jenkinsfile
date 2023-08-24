@@ -4,24 +4,7 @@ pipeline {
     stages {
         stage('Cleanup') {
             steps {
-                sh 'docker-compose down -v --remove-orphans'
                 sh 'docker system prune -a --volumes -f'
-            }
-        }
-
-        stage('Build MariaDB Image') {
-            steps {
-                script {
-                    def mariadbImage = docker.build("mymariadb-image", "-f Dockerfile.mariadb .")
-                }
-            }
-        }
-
-        stage('Build Gogs Image') {
-            steps {
-                script {
-                    def gogsImage = docker.build("mygogs-image", "-f Dockerfile.gogs .")
-                }
             }
         }
 
