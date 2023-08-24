@@ -1,12 +1,6 @@
 FROM golang:1.20 AS build-stage
 WORKDIR /app
 COPY . .
-
-USER git
-# Set environment variables for non-root user access
-ENV USER_UID=1000
-ENV USER_GID=1000
-
 RUN go get
 COPY *.go ./
 RUN CGO_ENABLED=0 GOOS=linux go build -o gogs
