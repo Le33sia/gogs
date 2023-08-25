@@ -1,5 +1,5 @@
 
-node {
+node('labelforslave') {
     def remoteServer = '10.0.0.35'
     def remotePath = '/home/git/workspace/'
     def sshCredentialsId = '6868900f-c523-4df0-bc9c-e866e20a3630'
