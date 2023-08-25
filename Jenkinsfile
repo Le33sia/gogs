@@ -10,11 +10,12 @@ pipeline {
 
         stage('Run Docker Compose') {
             steps {
-                sh 'docker compose up -d'
+                sh 'docker compose build'
                 sleep 15
                 sh 'docker ps'
                 sh 'docker compose down -v --remove-orphans'
                 sh 'docker images'
+                // sh 'docker save'
             }
         }
 
