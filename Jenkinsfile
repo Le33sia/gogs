@@ -1,4 +1,9 @@
+
 node {
+    def remoteServer = '10.0.0.35'
+    def remotePath = '/home/git/workspace/'
+    def sshCredentialsId = '6868900f-c523-4df0-bc9c-e866e20a3630'
+
     stage('Cleanup') {
         sh 'docker system prune -a --volumes -f'
     }
@@ -12,19 +17,15 @@ node {
     }
 
     stage('Deploy to Ubuntu_Server') {
-        // Assuming you have the necessary credentials set up in Jenkins
-        withCredentials([sshUserPrivateKey(credentialsId: 'cred_docker', keyFileVariable: 'KEY_FILE')]) {
-            def remoteServer = '10.0.0.35'
-            def remotePath = '/home/git/workspace/'
-
+        withCredentials([sshUserPrivateKey(credentialsId: sshCredentialsId, keyFileVariable: 'KEY_FILE')]) {
             // Copy Docker images to the remote server
-            sh "scp -i ${KEY_FILE} mymariadb-image.tar mygogs-image.tar git@${remoteServer}:${remotePath}"
+            sh "scp -i ${KEY_FILE} mymariadb-image.tar mygogs-image.tar ${remoteServer}:${remotePath}"
 
             // Copy docker-compose.yml to the remote server
-            sh "scp -i ${KEY_FILE} docker-compose.yml git@${remoteServer}:${remotePath}"
+            sh "scp -i ${KEY_FILE} docker-compose.yml ${remoteServer}:${remotePath}"
 
             // SSH into the remote server and run Docker Compose
-            sh "ssh -i ${KEY_FILE} git@${remoteServer} \"cd ${remotePath} && docker load -i mymariadb-image.tar && docker load -i mygogs-image.tar && docker-compose up -d\""
+            sh "ssh -i ${KEY_FILE} ${remoteServer} \"cd ${remotePath} && docker load -i mymariadb-image.tar && docker load -i mygogs-image.tar && docker compose up -d\""
         }
     }
 }
