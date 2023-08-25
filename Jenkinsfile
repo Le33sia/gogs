@@ -1,5 +1,3 @@
-def dockerCredentials = '6868900f-c523-4df0-bc9c-e866e20a3630'
-
 pipeline {
     agent any
 
@@ -24,17 +22,17 @@ pipeline {
             steps {
                 script {
                     // Copy Docker images to the Ubuntu server
-                    sshagent(['dockerCredentials']) {
+                    sshagent(['git']) {
                         sh 'scp mymariadb-image.tar mygogs-image.tar git@10.0.0.35:/home/git/workspace/'
                     }
                     
                     // Copy docker-compose.yml to the remote server
-                    sshagent(['dockerCredentials']) {
+                    sshagent(['git']) {
                         sh 'scp docker-compose.yml git@10.0.0.35:/home/git/workspace/'
                     }
                     
                     // SSH into the remote server and run Docker Compose
-                    sshagent(['dockerCredentials']) {
+                    sshagent(['git']) {
                         sh 'ssh git@10.0.0.35 "cd /home/git/workspace/ && docker load -i mymariadb-image.tar && docker load -i mygogs-image.tar && docker compose up -d"'
                     }
                 }
