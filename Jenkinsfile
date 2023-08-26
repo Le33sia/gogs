@@ -20,24 +20,13 @@ pipeline {
 
         stage('Deploy to Ubuntu_Server') {
             steps {
-                script {
-                    // Copy Docker images to the Ubuntu server
-                    sshagent(['dockerCredentials']) {
-                        sh 'scp mymariadb-image.tar mygogs-image.tar git@10.0.0.35:/home/git/workspace/'
-                    }
-                    
-                    // Copy docker-compose.yml to the remote server
-                    sshagent(['dockerCredentials']) {
-                        sh 'scp docker-compose.yml git@10.0.0.35:/home/git/workspace/'
-                    }
-                    
-                    // SSH into the remote server and run Docker Compose
-                    sshagent(['dockerCredentials']) {
-                        sh 'ssh git@10.0.0.35 "cd /home/git/workspace/ && docker load -i mymariadb-image.tar && docker load -i mygogs-image.tar && docker compose up -d"'
-                    }
+                sh 'docker save -o gogsimage.tar gogsimage'  
+                sh 'scp gogsimage.tar dev@10.0.0.50:/home/dev/'
+                sh 'scp docker-compose.yml dev@10.0.0.50:/home/dev/' 
+                     
                 }
             }
         }
     }
-}
+
         
