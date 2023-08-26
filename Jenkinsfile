@@ -1,12 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        label 'docker-label'
+    }
 
     stages {
         stage('Build') {
             steps {
                 script {
-                    // Build the Docker image for the Gogs application
-                    docker.build("my-gogs-app")
+                    sh 'docker system prune -a'
+                    }
                 }
             }
         }
@@ -14,8 +16,10 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Run tests if applicable
-                    // You can add your testing commands here
+                    // Run tests inside the Docker container
+                    sh 'docker build -t gogsapp .'
+                        
+                    }
                 }
             }
         }
@@ -23,8 +27,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy using Docker Compose
-                    sh 'docker-compose up -d'
+                    // Deploy using Docker Cloud
+                   // docker.image('your-docker-image').inside {
+                       // sh 'docker-compose up -d'
+                    }
                 }
             }
         }
@@ -33,7 +39,11 @@ pipeline {
     post {
         always {
             // Clean up resources
-            sh 'docker-compose down'
+            script {
+                //docker.image('your-docker-image').inside {
+                   // sh 'docker-compose down'
+                }
+            }
         }
     }
 }
