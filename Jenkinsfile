@@ -24,16 +24,4 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    // Deploy using Docker Cloud
-                   // docker.image('your-docker-image').inside {
-                       // sh 'docker-compose up -d'
-                    }
-                }
-            }
-        }
-    }
-
-   
+        
