@@ -9,7 +9,7 @@ pipeline {
             }
         }
 
-        stage('Run Docker Compose') {
+        stage('Building Gogs Image') {
             steps {
                 sh 'docker build -t gogsimage .'
                 sleep 15
@@ -17,16 +17,29 @@ pipeline {
                 sh 'docker compose down -v --remove-orphans'
             }
         }
-
-        stage('Deploy to Ubuntu_Server') {
+        stage('Deploy') {
+            environment {
+                // Set any environment variables needed for deployment
+            }
             steps {
-                sh 'docker save -o gogsimage.tar gogsimage'  
-                sh 'scp gogsimage.tar git@10.0.0.35:/home/git/workspace/'
-                sh 'scp docker-compose.yml git@10.0.0.35:/home/git/workspace/' 
-                     
+                script {
+                    // Copy the docker-compose.yml and gogsimage.tar files to the remote server
+                    sshCommand remote: '10.0.0.35', command: 'mkdir -p /home/git/app/' // Create a directory for deployment
+                    sshPut remote: '10.0.0.35', from: 'docker-compose.yml', into: '/home/git/app/'
+                    sshPut remote: '10.0.0.35', from: 'gogsimage.tar', into: '/home/git/app/'
+
+                    // SSH into the remote server and execute docker-compose up
+                   // sshCommand remote: '10.0.0.35', command: "cd /home/git/app/ && docker-compose up -d"
                 }
             }
         }
     }
+}
+
+
 
         
+
+
+        
+
