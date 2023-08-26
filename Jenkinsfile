@@ -24,21 +24,35 @@ pipeline {
                // sh 'docker compose down -v --remove-orphans'
             }
         }
-        stage('Deploy to Server') {
+        stages {
+        stage('Deploy') {
             steps {
                 script {
-                    def remotePath = "${SERVER_USERNAME}@${SERVER_IP}:${SERVER_DESTINATION}"
+                    sshagent(['home/jenkins/.ssh/id_rsa']) {
+                        def remotePath = "${SERVER_USERNAME}@${SERVER_IP}:${SERVER_DESTINATION}"
                    // sh "scp gogsimage.tar ${remotePath}"
                     //sshagent(['0f367be8-22f6-40db-b382-0debd9a3e609']) {
                     //sh "ssh ${remotePath} 'docker load -i gogsimage.tar'  
-                    sh "docker save -o ${DOCKER_IMAGE_NAME}.tar ${DOCKER_IMAGE_NAME}"
-                    sh "scp ${DOCKER_IMAGE_NAME}.tar ${remotePath}"
-                    sh "ssh ${remotePath} 'docker load -i ${DOCKER_IMAGE_NAME}.tar'"
+                        sh "docker save -o ${DOCKER_IMAGE_NAME}.tar ${DOCKER_IMAGE_NAME}"
+                        sh "scp ${DOCKER_IMAGE_NAME}.tar ${remotePath}"
+                        sh "ssh ${remotePath} 'docker load -i ${DOCKER_IMAGE_NAME}.tar'"
                     }
                 }
             }
         }
     }
+}
+       // stage('Deploy to Server') {
+       //     steps {
+       //         script {
+       //             def remotePath = "${SERVER_USERNAME}@${SERVER_IP}:${SERVER_DESTINATION}"
+                   // sh "scp gogsimage.tar ${remotePath}"
+                    //sshagent(['0f367be8-22f6-40db-b382-0debd9a3e609']) {
+                    //sh "ssh ${remotePath} 'docker load -i gogsimage.tar'  
+        //            sh "docker save -o ${DOCKER_IMAGE_NAME}.tar ${DOCKER_IMAGE_NAME}"
+         //           sh "scp ${DOCKER_IMAGE_NAME}.tar ${remotePath}"
+         //           sh "ssh ${remotePath} 'docker load -i ${DOCKER_IMAGE_NAME}.tar'"
+                    
 
 
 
