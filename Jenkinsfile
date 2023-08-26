@@ -36,14 +36,4 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            // Clean up resources
-            script {
-                //docker.image('your-docker-image').inside {
-                   // sh 'docker-compose down'
-                }
-            }
-        }
-    }
-}
+   
