@@ -24,7 +24,7 @@ pipeline {
                // sh 'docker compose down -v --remove-orphans'
             }
         }
-        stages {
+        
         stage('Deploy') {
             steps {
                 script {
@@ -42,6 +42,7 @@ pipeline {
         }
     }
 }
+
        // stage('Deploy to Server') {
        //     steps {
        //         script {
