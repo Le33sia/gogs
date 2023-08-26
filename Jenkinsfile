@@ -4,9 +4,9 @@ pipeline {
      environment {
         DOCKER_IMAGE_NAME = 'gogsimage'
        // DOCKER_IMAGE_TAG = 'latest'
-        SERVER_USERNAME = 'git'
-        SERVER_IP = '10.0.0.35'
-        SERVER_DESTINATION = '/home/git/'
+        SERVER_USERNAME = 'dev'
+        SERVER_IP = '10.0.0.50'
+        SERVER_DESTINATION = '/home/dev/'
     }
 
     stages {
