@@ -31,7 +31,7 @@ pipeline {
                    // sh "scp gogsimage.tar ${remotePath}"
                     //sshagent(['0f367be8-22f6-40db-b382-0debd9a3e609']) {
                     //sh "ssh ${remotePath} 'docker load -i gogsimage.tar'  
-                    sh "docker save -o ${DOCKER_IMAGE_NAME}.tar ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
+                    sh "docker save -o ${DOCKER_IMAGE_NAME}.tar ${DOCKER_IMAGE_NAME}"
                     sh "scp ${DOCKER_IMAGE_NAME}.tar ${remotePath}"
                     sh "ssh ${remotePath} 'docker load -i ${DOCKER_IMAGE_NAME}.tar'"
                     }
