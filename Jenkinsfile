@@ -30,7 +30,7 @@ pipeline {
                     def remotePath = "${SERVER_USERNAME}@${SERVER_IP}:${SERVER_DESTINATION}"
                     sh "docker save -o gogs.tar ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
                     sh "scp gogs.tar ${remotePath}"
-                    sshagent(['git']) {
+                    sshagent(['0f367be8-22f6-40db-b382-0debd9a3e609']) {
                         sh "ssh ${remotePath} 'docker load -i gogs.tar'"
                     }
                 }
