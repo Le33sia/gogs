@@ -20,8 +20,8 @@ pipeline {
         stage('Deploy to Ubuntu_Server') {
             steps {
                 sh 'docker save -o gogsimage.tar gogsimage'  
-                sh 'scp gogsimage.tar git@10.0.0.35:/home/git/'
-                sh 'scp docker-compose.yml git@10.0.0.35:/home/git/' 
+                sh 'scp /home/jenkins/worspace/dockerbuild/gogsimage.tar git@10.0.0.35:/home/git/'
+                sh 'scp /home/jenkins/worksppace/dockerbuild/docker-compose.yml git@10.0.0.35:/home/git/' 
             }
         }
 
