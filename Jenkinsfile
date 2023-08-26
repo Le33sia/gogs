@@ -18,9 +18,6 @@ pipeline {
             }
         }
         stage('Deploy') {
-            environment {
-                // Set any environment variables needed for deployment
-            }
             steps {
                 script {
                     // Copy the docker-compose.yml and gogsimage.tar files to the remote server
