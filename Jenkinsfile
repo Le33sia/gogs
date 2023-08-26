@@ -1,4 +1,4 @@
-
+ 
 pipeline {
     agent any
     stages {
@@ -24,11 +24,11 @@ pipeline {
                 sh 'scp /home/jenkins/worksppace/dockerbuild/docker-compose.yml git@10.0.0.35:/home/git/' 
             }
         }
+    }
+}        
 
         
-
-
-        
+       
         
 
 
