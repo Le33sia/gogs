@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'gogs_image'
+        DOCKER_IMAGE_NAME = 'gogsimage'
         DOCKER_IMAGE_TAG = 'latest'
         SERVER_USERNAME = 'dev'
         SERVER_IP = '10.0.0.50'
