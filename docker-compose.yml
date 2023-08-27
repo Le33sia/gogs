@@ -2,7 +2,7 @@ version: '2'
 
 services:
   gogs:
-    image: gogsimage
+    image: gogsimage:latest
     environment:
       USER_UID: 1001  # Adjust this UID as needed
       USER_GID: 1001  # Adjust this GID as needed
