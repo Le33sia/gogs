@@ -47,16 +47,22 @@ pipeline {
                             sourceFiles: "docker-compose.yml",
                             remoteDirectory: REMOTE_DIRECTORY // Remote directory for the docker-compose.yml file
                         )
-                    ],
-                    execCommands: [
-                        "cd ${REMOTE_DIRECTORY}",
-                        "docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
-                        "sudo docker compose up -d" // Run Docker Compose
                     ]
                 )]
+            )
+
+            // Run commands on the remote server using SSH
+            sshScript(
+                remote: 'Prod_Server',
+                script: [
+                    "cd ${REMOTE_DIRECTORY}",
+                    "docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
+                    "sudo -u git docker compose up -d"
+                ]
             )
         }
     }
 }
     }
 }
+
