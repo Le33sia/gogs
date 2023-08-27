@@ -30,7 +30,7 @@ pipeline {
                         publishers: [sshPublisherDesc(
                             configName: 'RemoteUbuntuServer', // Name of the SSH server configuration
                             transfers: [sshTransfer(
-                                sourceFiles: "${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar", /home/jenkins/workspace/dockerbuild/docker-compose.yml 
+                                sourceFiles: "${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",  /home/agent/docker-compose.yml 
                                 remoteDirectory: REMOTE_DIRECTORY // Remote directory
                             )]
                         )]
