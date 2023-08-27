@@ -51,7 +51,7 @@ pipeline {
                     execCommands: [
                         "cd ${REMOTE_DIRECTORY}",
                         "docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
-                        "sudo -u git docker-compose up -d" // Run Docker Compose
+                        "sudo docker compose up -d" // Run Docker Compose
                     ]
                 )]
             )
