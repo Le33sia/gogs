@@ -5,9 +5,8 @@ pipeline {
     environment {
         DOCKER_IMAGE_NAME = 'gogsimage'
         DOCKER_IMAGE_TAG = 'latest'
-        SERVER_USERNAME = 'git'
         SERVER_IP = '10.0.0.50'
-        REMOTE_DIRECTORY = '/home/git/'
+        //REMOTE_DIRECTORY = '/home/'
     }
     stages {
         stage('Cleanup') {
@@ -28,9 +27,9 @@ pipeline {
         stage('Deploy to Ubuntu_Server') {
             steps {
                 sh 'docker save -o gogsimage.tar gogsimage'  
-                sh 'scp gogsimage.tar git@10.0.0.50:/home/git/'
-                sh 'scp docker-compose.yml git@10.0.0.50:/home/git/'
-                sh 'ssh git@10.0.0.50 "docker load -i gogsimage.tar" '
+                sh 'scp gogsimage.tar jenkins@10.0.0.50:~'
+                sh 'scp docker-compose.yml jenkins@10.0.0.50:~'
+                sh 'ssh jenkins@10.0.0.50 "docker load -i gogsimage.tar" '
             }
         }
     }
