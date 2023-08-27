@@ -1,6 +1,6 @@
  
 pipeline {
-    agent any
+    agent {label 'docker'}
      environment {
         DOCKER_IMAGE_NAME = 'gogsimage'
        // DOCKER_IMAGE_TAG = 'latest'
