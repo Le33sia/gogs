@@ -51,17 +51,13 @@ pipeline {
             )
 
             // Run commands on the remote server using SSH
-            sshPublisher(
-                publishers: [sshPublisherDesc(
-                    configName: 'Prod_Server', // Name of the SSH server configuration
-                    transfers: [], // No need to transfer anything here
-                    execCommands: [
-                        "cd ${REMOTE_DIRECTORY}",
-                        "docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
-                        "sudo -u git docker-compose up -d"
-                    ]
-                )]
-            )
+            sh """
+            ssh 'dev@10.0.0.50'
+                cd ${REMOTE_DIRECTORY}
+                docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar
+                sudo docker compose up -d
+            '
+            """
         }
     }
 }
