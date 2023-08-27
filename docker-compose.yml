@@ -4,6 +4,8 @@ services:
   gogs:
     image: gogsimage:latest
     container_name: gogs
+    user: git 
+    
     environment:
       USER_UID: 1001  # Adjust this UID as needed
       USER_GID: 1001  # Adjust this GID as needed
