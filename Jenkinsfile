@@ -1,15 +1,25 @@
+
 pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'gogsimage'
+        DOCKER_IMAGE_NAME = 'gogs_image'
         DOCKER_IMAGE_TAG = 'latest'
         SERVER_USERNAME = 'dev'
         SERVER_IP = '10.0.0.50'
-        REMOTE_DIRECTORY = '/home/dev/'
+        REMOTE_DIRECTORY = '/app/'
     }
 
     stages {
+        stage('Cleanup Old Data') {
+            steps {
+                script {
+                    // Delete old data in Docker (e.g., containers, images, volumes)
+                    sh 'docker system prune -a --volumes -f'
+                }
+            }
+        }
+
         stage('Build and Save Image') {
             steps {
                 script {
@@ -22,16 +32,33 @@ pipeline {
             }
         }
 
-        stage('Transfer Image') {
+        stage('Transfer Files and Run Docker Compose') {
             steps {
                 script {
-                    // Transfer the image tar file to the remote server
+                    // Transfer the image tar file and docker-compose.yml to the remote server
                     sshPublisher(
                         publishers: [sshPublisherDesc(
                             configName: 'Prod_Server', // Name of the SSH server configuration
                             transfers: [sshTransfer(
-                                sourceFiles: "${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar", // Image tar file
+                                sourceFiles: [
+                                    "${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
+                                    '/home/jenkins/workspace/dockerbuild/docker-compose.yml'
+                                ],
                                 remoteDirectory: REMOTE_DIRECTORY // Remote directory
+                            )]
+                        )]
+                    )
+
+                    // Run docker-compose up on the remote server as the 'git' user
+                    sshPublisher(
+                        publishers: [sshPublisherDesc(
+                            configName: 'Prod_Server', // Name of the SSH server configuration
+                            transfers: [sshTransfer(
+                                execCommands: [
+                                    "cd ${REMOTE_DIRECTORY}",
+                                    "docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
+                                    "sudo -u git docker compose up -d"
+                                ]
                             )]
                         )]
                     )
@@ -40,3 +67,6 @@ pipeline {
         }
     }
 }
+
+
+
