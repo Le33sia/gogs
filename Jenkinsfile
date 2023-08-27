@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -11,15 +10,6 @@ pipeline {
     }
 
     stages {
-        stage('Cleanup Old Data') {
-            steps {
-                script {
-                    // Delete old data in Docker (e.g., containers, images, volumes)
-                    sh 'docker system prune -a --volumes -f'
-                }
-            }
-        }
-
         stage('Build and Save Image') {
             steps {
                 script {
@@ -32,37 +22,22 @@ pipeline {
             }
         }
 
-        stage('Transfer Files and Run Docker Compose') {
+        stage('Transfer Image') {
             steps {
                 script {
-                    // Transfer the image tar file and docker-compose.yml to the remote server
+                    // Transfer the image tar file to the remote server
                     sshPublisher(
                         publishers: [sshPublisherDesc(
                             configName: 'Prod_Server', // Name of the SSH server configuration
                             transfers: [sshTransfer(
-                                sourceFiles: [
-                                    "${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
-                                    '/home/agent/docker-compose.yml'
-                                ],
+                                sourceFiles: "${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar", 
+                            
                                 remoteDirectory: REMOTE_DIRECTORY // Remote directory
                             )]
                         )]
                     )
-
-                    // Run docker-compose up on the remote server
-                    sshPublisher(
-                        publishers: [sshPublisherDesc(
-                            configName: 'Prod_Server', // Name of the SSH server configuration
-                            transfers: [sshTransfer(
-                                execCommands: [
-                                    "cd ${REMOTE_DIRECTORY}",
-                                    "docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
-                                    "docker compose up -d"
-                                ]
-                            )]
-                        )]
-                    )
                 }
+
             }
         }
     }
