@@ -10,6 +10,14 @@ pipeline {
     }
 
     stages {
+        stage('Cleanup Old Data') {
+            steps {
+                script {
+                    // Delete old data in Docker (e.g., containers, images, volumes)
+                    sh 'docker system prune -a --volumes -f'
+                }
+            }
+        }
         stage('Build and Save Image') {
             steps {
                 script {
