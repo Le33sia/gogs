@@ -5,8 +5,8 @@ services:
     image: gogsimage:latest
     container_name: gogs
     environment:
-      USER_UID: 1001  # Adjust this UID as needed
-      USER_GID: 1001  # Adjust this GID as needed
+      #USER_UID: 1001  # Adjust this UID as needed
+      #USER_GID: 1001  # Adjust this GID as needed
       #GOGS_RUN_USER: git
       GOGS_RUN_MODE: prod
       #GOGS_DATABASE_HOST: mariadb:3306
