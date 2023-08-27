@@ -19,8 +19,8 @@ services:
       - "3000:3000"
      
     volumes:
-      - gogs_data:/data
-      - gogs_conf:/data/gogs/conf
+      - /home/jenkins/gogs_data:/data
+      - /home/jenkins/gogs_conf:/data/gogs/conf
     depends_on: 
       - database  
     networks:
@@ -36,7 +36,7 @@ services:
       MYSQL_HOST: 0.0.0.0:3306
       GOGS_DATABASE_HOST: mariadb:3306
     volumes:
-      - mariadb_data:/var/lib/mysql/data
+      - /home/jenkins/mariadb_data:/var/lib/mysql/data
     ports:
       - 3306:3306
     networks:
