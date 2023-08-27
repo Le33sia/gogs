@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -33,13 +32,13 @@ pipeline {
         }
 
         stage('Transfer Files and Run Docker Compose') {
-            steps {
-                script {
-                    // Transfer the image tar file and docker-compose.yml to the remote server
-                    sshPublisher(
-                        publishers: [sshPublisherDesc(
-                            configName: 'Prod_Server', // Name of the SSH server configuration
-                            transfers: [
+    steps {
+        script {
+            // Transfer the image tar file and docker-compose.yml to the remote server
+            sshPublisher(
+                publishers: [sshPublisherDesc(
+                    configName: 'Prod_Server', // Name of the SSH server configuration
+                    transfers: [
                         sshTransfer(
                             sourceFiles: "${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar", 
                             remoteDirectory: REMOTE_DIRECTORY // Remote directory for the image tar file
@@ -48,6 +47,11 @@ pipeline {
                             sourceFiles: "docker-compose.yml",
                             remoteDirectory: REMOTE_DIRECTORY // Remote directory for the docker-compose.yml file
                         )
+                    ],
+                    execCommands: [
+                        "cd ${REMOTE_DIRECTORY}",
+                        "docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar",
+                        "sudo -u git docker-compose up -d" // Run Docker Compose
                     ]
                 )]
             )
@@ -55,4 +59,4 @@ pipeline {
     }
 }
     }
-        }
+}
