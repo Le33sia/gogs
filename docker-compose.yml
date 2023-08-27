@@ -17,8 +17,7 @@ services:
     ports:
       - "10022:22"
       - "3000:3000"
-     links:
-        - database 
+     
     volumes:
       - gogs_data:/data
       - gogs_conf:/data/gogs/conf
