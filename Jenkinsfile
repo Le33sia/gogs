@@ -52,7 +52,7 @@ pipeline {
 
             // Run commands on the remote server using SSH
             sh """
-            ssh Prod_Server '
+            ssh dev@10.0.0.50 '
                 cd ${REMOTE_DIRECTORY}
                 docker load -i ${DOCKER_IMAGE_NAME}_${DOCKER_IMAGE_TAG}.tar
                 docker compose up -d
