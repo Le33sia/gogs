@@ -20,7 +20,7 @@ pipeline {
                 sh 'docker build -t gogsimage .'
                 sleep 15
                 sh 'docker images'
-               // sh 'docker compose down -v --remove-orphans'
+                sh 'docker compose down -v --remove-orphans'
             }
         }
 
