@@ -21,7 +21,7 @@ services:
      
     volumes:
       - /home/jenkins/gogs_data:/data
-      - /home/jenkins/gogs_conf:/data/gogs/conf
+      - /home/jenkins/gogs_conf:/data/gogs/conf/app.ini
     depends_on: 
       - database  
     networks:
