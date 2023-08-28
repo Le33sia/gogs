@@ -3,8 +3,7 @@ version: '2'
 services:
   gogs:
     image: gogsimage:latest
-    container_name: gogs
-    user: git 
+    container_name: gogs 
     
     environment:
       USER_UID: 1001  # Adjust this UID as needed
