@@ -12,7 +12,7 @@ services:
       GOGS_RUN_MODE: prod
       GOGS_DATABASE_HOST: mariadb:3306
       GOGS_DATABASE_USER: gogs
-      GOGS_DATABASE_PASSWORD: ${MYSQL_PASSWORD}
+      GOGS_DATABASE_PASSWORD: gogs
       GOGS_DATABASE_NAME: gogs
       GOGS_HOST: 10.0.0.50:3000
     ports:
@@ -30,10 +30,10 @@ services:
     image: mariadb:10.6  
     container_name: mariadb
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: gogs
       MYSQL_DATABASE: gogs
       MYSQL_USER: gogs
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: gogs
       MYSQL_HOST: mariadb:3306
       GOGS_DATABASE_HOST: mariadb:3306
     volumes:
