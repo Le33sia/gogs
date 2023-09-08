@@ -1,1 +1,1 @@
-web: bin/gogs
+web: bin/application
