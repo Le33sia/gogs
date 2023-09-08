@@ -4,4 +4,4 @@
 go get ./...
 
 # Build app
-go build ./ -o bin/gogs
+go build ./ -o bin/application
