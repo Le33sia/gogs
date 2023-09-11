@@ -11,10 +11,10 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - go build -o gogs
+      - go build -o application gogs.go
   post_build:
     commands:
       - echo Build completed on `date`
 artifacts:
   files:
-    - /home/lesia/gogs/uploadThis.zip
+    - '**/application/**/*'
