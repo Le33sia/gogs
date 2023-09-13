@@ -15,8 +15,12 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - zip application.zip application
+  post_build:
+    commands:
+      - echo Build completed on `date`
 artifacts:
   files:
-    - application.zip          
+    - '**/*'
+  base-directory: '.'   
+            
 
