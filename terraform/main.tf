@@ -47,7 +47,7 @@ resource "aws_route_table_association" "PublicRTAssociation"{
 resource "aws_s3_bucket" "eb_bucket" {
   bucket = "enes-eb-bucket" # Name of S3 bucket 
 }
-# Define App files to be uploaded to S3
+
 # Beanstalk instance profile
 data "aws_ec2_instance_type" "example" {
   instance_type = "t2.micro"
