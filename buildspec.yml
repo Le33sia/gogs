@@ -11,13 +11,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - go build -o application gogs.go
-  post_build:
-    commands:
-      - echo Build completed on `date`
-artifacts:
-  files:
-    - '**/*'
-  base-directory: '.'   
+      - go build -o gogs
+  
             
 
