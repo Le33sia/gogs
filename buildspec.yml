@@ -12,9 +12,7 @@ phases:
     commands:
       - echo Build started on `date`
       - go build -o gogs
-artifacts:
-    files:
-        - '**/*'
+
       
   
             
