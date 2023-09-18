@@ -1,18 +1,7 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-    }
-  }
-  #backend "s3" {
-   # bucket = "enes-mybucket"  # S3 bucket name
-    #key    = "path/to/my/key" # S3 key name
-    #region = "us-east-2"      # S3 region
-  #}
-}
-# Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
+  //access_key = 
+  //secret_key = 
 }
 resource "aws_vpc" "myvpc"{
     cidr_block = "10.0.0.0/16"
@@ -25,11 +14,26 @@ resource "aws_subnet" "PublicSubnet"{
     availability_zone = "us-east-2a"
     cidr_block = "10.0.1.0/24"
 }    
-resource "aws_subnet" "PrivSubnet"{
-    vpc_id = aws_vpc.myvpc.id
-    cidr_block = "10.0.2.0/24"
-    map_public_ip_on_launch = true
+resource "aws_subnet" "PrivateDbSubnet" {
+  vpc_id            = aws_vpc.myvpc.id
+  availability_zone =  "us-east-2a"# Choose a single availability zone for the private subnet
+  cidr_block        = "10.0.2.0/24"
+  map_public_ip_on_launch = false
 }
+
+resource "aws_subnet" "PrivateAppSubnet" {
+  vpc_id            = aws_vpc.myvpc.id
+  availability_zone = "us-east-2a"  # Choose the same availability zone as PrivateDbSubnet
+  cidr_block        = "10.0.3.0/24"
+  map_public_ip_on_launch = false   //or true?
+}
+resource "aws_subnet" "PrivateAppSubnet2" {
+  vpc_id            = aws_vpc.myvpc.id
+  availability_zone = "us-east-2b"        #при створенні aws_db_subnet_group  вимагає більше двох зон, то додала us-east-2b.не знаю як по іншому
+  cidr_block        = "10.0.4.0/24"
+  map_public_ip_on_launch = false
+}
+
 resource "aws_internet_gateway" "myIgw"{
     vpc_id = aws_vpc.myvpc.id
 }
@@ -44,33 +48,62 @@ resource "aws_route_table_association" "PublicRTAssociation"{
     subnet_id = aws_subnet.PublicSubnet.id
     route_table_id = aws_route_table.PublicRT.id
 }
-resource "aws_s3_bucket" "eb_bucket" {
-  bucket = "enes-eb-bucket" # Name of S3 bucket 
+
+
+# sec group
+resource "aws_security_group" "gogs-prod" {
+  vpc_id = aws_vpc.myvpc.id
+  name = "gogs-secgroup"
+  description = "App security group"
+  egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
-# Beanstalk instance profile
-data "aws_ec2_instance_type" "example" {
-  instance_type = "t2.micro"
+
+
+resource "aws_iam_role" "beanstalkgogs" {
+    name = "beanstalkgogs"
+
+    managed_policy_arns = [
+        "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier",
+        "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker",
+        "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier",
+        "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+    ]
+
+    assume_role_policy = jsonencode({
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Action = "sts:AssumeRole",
+          Effect = "Allow",
+          Principal = {
+            Service = "ec2.amazonaws.com"
+          }
+        }
+      ]
+   })
+}
+resource "aws_iam_instance_profile" "beanstalkgogs_profile" {
+    name = "beanstalkgogs-profile"
+    role = aws_iam_role.beanstalkgogs.name
 }
 
-# Create an Elastic Beanstalk Application
-resource "aws_elastic_beanstalk_application" "gogs_app" {
+
+resource "aws_elastic_beanstalk_application" "gogs" {
   name = "GogsApp"
-
-  #appversion_lifecycle {
-   # service_role          = aws-iam-role.beanstalk_service.arn
-    #delete_source_from_s3 = true
-  #}
 }
-  
 # CREATE ENVIRONMENT
-resource "aws_elastic_beanstalk_environment" "gogs_env" {
+resource "aws_elastic_beanstalk_environment" "gogs-env" {
   name        = "GogsEnvironment"
-  application = aws_elastic_beanstalk_application.gogs_app.name
+  application = aws_elastic_beanstalk_application.gogs.name
   solution_stack_name = "64bit Amazon Linux 2 v3.8.0 running Go 1"
   wait_for_ready_timeout = "10m"
   tier = "WebServer"
-
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
@@ -79,7 +112,64 @@ resource "aws_elastic_beanstalk_environment" "gogs_env" {
    setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
-    value     = aws_subnet.PrivSubnet.id
+    value     = aws_subnet.PublicSubnet.id
   }
-}  
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = aws_subnet.PrivateAppSubnet.id
+  }
+  # Associate the security group with the Elastic Beanstalk environment
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name = "SecurityGroups"
+    value = "${aws_security_group.gogs-prod.id}"
+  }
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "IamInstanceProfile"
+    value     = aws_iam_instance_profile.beanstalkgogs_profile.name
+  }
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     =  "True"
+  }
+  
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "InstanceType"
+    value     = "t3.micro"
+  }
+setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = "RDS_USERNAME"
+    value = "${aws_db_instance.rds-gogs-prod.username}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = "RDS_PASSWORD"
+    value = "${aws_db_instance.rds-gogs-prod.password}"
+  }
+  //setting {
+    //namespace = "aws:elasticbeanstalk:application:environment"
+    //name = "RDS_DATABASE"
+    //value = "${aws_db_instance.rds-gogs-prod.name}"
+  //}
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = "RDS_HOSTNAME"
+    value = "${aws_db_instance.rds-gogs-prod.endpoint}"
+  }
+}
+
+
+
+
+
+
+resource "aws_s3_bucket" "my_s3_bucket" {
+  bucket = "gogss3bucket"  # Replace with your desired bucket name # Adjust access control as needed
+}
+
 
