@@ -29,7 +29,7 @@ resource "aws_subnet" "PrivateAppSubnet" {
 }
 resource "aws_subnet" "PrivateAppSubnet2" {
   vpc_id            = aws_vpc.myvpc.id
-  availability_zone = "us-east-2b"        #при створенні aws_db_subnet_group  вимагає більше двох зон, то додала us-east-2b.не знаю як по іншому
+  availability_zone = "us-east-2b"        #при створенні aws_db_subnet_group  вимагає більше двох зон, то додала us-east-2b
   cidr_block        = "10.0.4.0/24"
   map_public_ip_on_launch = false
 }
