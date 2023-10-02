@@ -24,15 +24,20 @@ pipeline {
                 echo "Testing"
             }
         }
-        stage('Deploy to Ubuntu_Server') {
+        stage('Deploy to DockerHub') {
             steps {
-                echo 'hello'  
+                script{
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                    sh 'docker login -u lesiah -p ${dockerhubpwd}'
+    
+}
                 
-            
+                    sh 'docker push lesiah/gogs'
             }
         }
     }
-}        
+} 
+}
 
         
 
