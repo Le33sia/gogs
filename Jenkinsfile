@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     
@@ -37,16 +36,21 @@ pipeline {
         }
     }
 } 
-        stage('Deploy to k8s'){
+        stage('Deploy to k8s') {
             steps{
                 script{
-                    kubernetesDeploy (configs: 'app-deployment.yaml', kubeconfigId: 'k8sconfigpwd')
+                    kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
                 }
             }
         }
     }
 
 
+        
+
+
+        
+        
         
 
 
