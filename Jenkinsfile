@@ -31,21 +31,17 @@ pipeline {
     }
  
         stage('Deploy App on k8s') {
-      steps {
-            sshagent(['k8s']) {
-            sh "scp -o StrictHostKeyChecking=no app-deployment.yaml lesia@10.0.0.206:/home/lesia/gogs"
-            script {
-                try{
-                    sh "ssh lesia@10.0.0.206 kubectl create -f ."
-                }catch(error){
-                    sh "ssh lesia@10.0.0.206 kubectl create -f ."
-                }
+            steps {
+                sh '''
+                ssh lesia@10.0.0.206 "cd /home/lesia/gogs && kubectl -f apply app-deployment"
+                '''  
+                
             }
           }
       }
     }
-  }
-}        
+  
+        
        
               
         
