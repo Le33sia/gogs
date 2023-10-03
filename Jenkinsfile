@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        SERVER_IP = '10.0.0.206'
+    }
     
     stages {
         stage('Build Gogs Image') {
@@ -33,7 +36,7 @@ pipeline {
         stage('Deploy App on k8s') {
             steps {
                 sh '''
-                ssh -i /home/jenkins/.ssh/id_rsa lesia@10.0.0.206 "cd /home/lesia/gogs && kubectl apply -f app-deployment"
+                ssh lesia@10.0.0.206 "cd /home/lesia/gogs && kubectl apply -f app-deployment"
                 '''  
                 
             }
