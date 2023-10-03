@@ -36,7 +36,7 @@ pipeline {
         stage('Deploy App on k8s') {
             steps {
                 sh '''
-                ssh lesia@10.0.0.206 "cd /home/lesia/gogs && kubectl apply -f app-deployment"
+                ssh lesia@10.0.0.206 "cd /home/lesia/gogs && kubectl apply -f app-deployment.yaml"
                 '''  
                 
             }
