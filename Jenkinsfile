@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build Gogs Image') {
             steps {
-                sh 'docker build -t lesiah/gogs:latest .'
+                sh 'docker build -t lesiah/gogs:0.14 .'
                 sleep 15
                 sh 'docker images'
             }
@@ -25,26 +25,29 @@ pipeline {
     
 }
                 
-                    sh 'docker push lesiah/gogs:latest'
+                    sh 'docker push lesiah/gogs:0.14'
             }
         }
     }
  
-        stage('Deploy to k8s') {
-            steps{
-                script{
-                    kubernetesDeploy (configs: 'app-deployment.yaml',kubeconfigId: 'k8sconfigpwd')
+        stage('Deploy App on k8s') {
+      steps {
+            sshagent(['k8s']) {
+            sh "scp -o StrictHostKeyChecking=no app-deployment.yaml lesia@192.168.49.2:/home/lesia/gogs"
+            script {
+                try{
+                    sh "ssh lesia@192.168.49.2 kubectl create -f ."
+                }catch(error){
+                    sh "ssh lesia@192.168.49.2 kubectl create -f ."
                 }
             }
-        }
+          }
+      }
     }
-}
-
-
-        
-
-
-        
+  }
+}        
+       
+              
         
         
 
