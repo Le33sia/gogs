@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build Gogs Image') {
             steps {
-                sh 'docker build -t lesiah/gogs .'
+                sh 'docker build -t lesiah/gogs:latest .'
                 sleep 15
                 sh 'docker images'
             }
@@ -25,7 +25,7 @@ pipeline {
     
 }
                 
-                    sh 'docker push lesiah/gogs'
+                    sh 'docker push lesiah/gogs:latest'
             }
         }
     }
