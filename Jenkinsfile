@@ -1,13 +1,10 @@
 pipeline {
     agent any
-    environment {
-        SERVER_IP = '10.0.0.206'
-    }
     
     stages {
         stage('Build Gogs Image') {
             steps {
-                sh 'docker build -t lesiah/gogs:0.14 .'
+                sh 'docker build -t lesiah/gogs:0.13 .'
                 sleep 15
                 sh 'docker images'
             }
@@ -28,7 +25,7 @@ pipeline {
     
 }
                 
-                    sh 'docker push lesiah/gogs:0.14'
+                    sh 'docker push lesiah/gogs:0.13'
             }
         }
     }
