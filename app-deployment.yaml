@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: gogs
-          image: gogs/gogs:0.13
+          image: 906476880257.dkr.ecr.us-east-2.amazonaws.com/my-docker-repo-private:latest
           ports:
             - containerPort: 3000
           env:   # Setting Enviornmental Variables
