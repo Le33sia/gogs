@@ -38,7 +38,7 @@ pipeline {
       }
         stage('K8S Deploy') {
       steps{
-            sh ('kubectl apply -f  app.deployment.yaml')
+            sh ('cd /home/ubuntu/k8s && kubectl apply -f  app.deployment.yaml')
             
                 }
             }
