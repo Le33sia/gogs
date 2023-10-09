@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: gogs
-          image: 906476880257.dkr.ecr.us-east-2.amazonaws.com/my-docker-repo-private:latest
+          image: 906476880257.dkr.ecr.us-east-2.amazonaws.com/gogsapp:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
