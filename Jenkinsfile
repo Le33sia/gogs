@@ -37,24 +37,16 @@ pipeline {
         }
       }
         stage('K8S Deploy') {
-      steps{   
-          script {
-                withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
-                sh ('kubectl apply -f  mysql-configMap.yaml')
-                sleep 5
-                sh ('kubectl apply -f  mysql-secret.yaml')
-                sleep 5
-                sh ('kubectl apply -f  mysql.yaml')
-                sleep 10
-                sh ('kubectl apply -f  app.deployment.yaml')
+      steps{
+            sh ('kubectl apply -f  app.deployment.yaml')
             
                 }
             }
         }
        }
-    }
+    
         
-    }
+    
  
         
        
